@@ -16,8 +16,6 @@ var lastName = document.getElementById("last-name");
 var thankfulInput = document.getElementById("thankful-input");
 let min = 35;
 let max = 65;
-// let url = "http://localhost:3000"
-//let url = "https://thanksgivingtree.herokuapp.com/"
 let url = "https://api.mlab.com/api/1/databases/heroku_49mrv4g0/collections/leaves?apiKey=0qvWZe2FVufM8yIjnQa3_QGU9YdtysS1"
 
 //add event listener to addButton...if tree is displayed, hide it and show form. If not, add tree and leaves
@@ -72,13 +70,13 @@ function hideForm() {
 }
 
 
-function addLeaf(first, last, thanks) {
+async function addLeaf(first, last, thanks) {
     let date = new Date();
     let newLeaf = { "author": first, "content": thanks};
     let xLoc = (Math.floor(Math.random() * (max - min + 1)) + min);
     let yLoc = (Math.floor(Math.random() * (max - min + 1)) + min)
     //, "month": date.getMonth(), "day": date.getDay(), "id": leafCount
-    fetch(url, {
+    await fetch(url, {
         headers: {"Content-Type": "application/json; charset=utf-8"},
         method: 'POST',
         body: JSON.stringify({
@@ -102,7 +100,6 @@ function styleLeafImg(newLeafImg, location) {
     newLeafImg.style.position = "absolute";
     newLeafImg.setAttribute("src", "images/orangeLeaf.png")
     newLeafImg.style.left = location[0] + "%";
-    console.log('left' + newLeafImg.style.left)
     newLeafImg.style.top = location[1] + "%";
 
 }
