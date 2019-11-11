@@ -127,3 +127,7 @@ input{
 .dropdown-row{
   height: 10vw;
 }
+
+.main-dropdown-row{
+  height: 5vw;
+}

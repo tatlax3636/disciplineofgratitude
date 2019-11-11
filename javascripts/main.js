@@ -1,6 +1,7 @@
 //global variables
 var tree = document.getElementsByClassName('tree')[0]
 var leaves = []; //array to hold leaf objects for now until DB is created
+var users = [];
 let leafCount = 0;
 var testLeaf = document.getElementsByTagName('img')[1];
 var tree = document.getElementById("tree");
@@ -8,6 +9,9 @@ var leafContainer = document.getElementById("leaf-container")
 var details = document.getElementById("details-content")
 var signature = document.getElementById("details-author")
 var addButton = document.getElementById("add-leaf");
+var leafImages = document.getElementsByClassName('leaf-selector')
+let dropdown = document.getElementsByTagName('select')[0]
+
 
 //form elements
 var form = document.getElementsByTagName('form')[0];
@@ -32,15 +36,47 @@ addButton.addEventListener('click', function (e) {
     }
 })
 
+//add event listener to dropdown to highlight leaves of selected user
+dropdown.addEventListener('change', function(e){
+    clearLeaves();
+    addLeaves()
+})
+
 //tree styling
 tree.style.height = "70vh";
 tree.style.width = "auto";
 
-//hide form to start
+//hide form to start, get leaves, populate dropdown
+let firstTime = true;
 hideForm();
 makeRequest()
+setTimeout(function(){
+    populateDropdown()}, 1000)
 
 
+//Populate dropdown
+function populateDropdown() {
+    users = []
+    let defaultOption = document.createElement('option');
+    dropdown.append(defaultOption);
+    defaultOption.innerText = "All users";
+    defaultOption.value = "all";
+    defaultOption.selected = true;
+
+    for (let i = 0; i < leaves.length; i++) {
+        author = leaves[i].author;
+        if (users.includes(author)) {
+
+        } else {
+            users.push(author);
+            let newOption = document.createElement('option')
+            dropdown.append(newOption);
+            newOption.value = author;
+            newOption.innerText = author;
+        }
+
+    }
+}
 //show form so that a user can add a new leaf
 function showForm() {
     form.style.height = "50vh";
@@ -106,24 +142,28 @@ function styleLeafImg(newLeafImg, location) {
 
 function addLeaves() {
     for (let i = 0; i < leaves.length; i++) {
-        let newLeafImg = document.createElement('img');
-        newLeafImg.id = leaves[i]._id.$oid;
-        xloc = leaves[i].x_location;
-        yloc = leaves[i].y_location;
-
-
-        document.getElementById('leaf-container').append(newLeafImg);
-        // styleLeafImg(newLeafImg, [leaves[i].x_location, leaves[i].y_location]);
-        styleLeafImg(newLeafImg, [xloc, yloc]);
-
-
-        addLeafListener(newLeafImg, i);
-        if(i==leaves.length-1){
-            console.log("in one")
-            newLeafImg.setAttribute('src', 'images/yellowLeaf.png')
+        if(leaves[i].author == dropdown.value || dropdown.value == "all" || firstTime == true){
+            let newLeafImg = document.createElement('img');
+            newLeafImg.id = leaves[i]._id.$oid;
+            newLeafImg.classList.add('leaf-selector')
+            xloc = leaves[i].x_location;
+            yloc = leaves[i].y_location;
+    
+    
+            document.getElementById('leaf-container').append(newLeafImg);
+            // styleLeafImg(newLeafImg, [leaves[i].x_location, leaves[i].y_location]);
+            styleLeafImg(newLeafImg, [xloc, yloc]);
+    
+    
+            addLeafListener(newLeafImg, i);
+            if(i==leaves.length-1){
+                newLeafImg.setAttribute('src', 'images/yellowLeaf.png')
+            }
         }
         
+        
     }
+    firstTime = false;
 
 }
 function clearLeaves() {
@@ -175,7 +215,6 @@ function getLeaves() {
             leaves = [];
             let response = JSON.parse(httpRequest.responseText)
             for(let i=0; i<response.length; i++){
-                console.log(response[i])
                 leaves.push(response[i])
             }
             addLeaves();
