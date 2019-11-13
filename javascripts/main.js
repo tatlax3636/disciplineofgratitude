@@ -16,7 +16,6 @@ let dropdown = document.getElementsByTagName('select')[0]
 //form elements
 var form = document.getElementsByTagName('form')[0];
 var firstName = document.getElementById("first-name");
-// var lastName = document.getElementById("last-name");
 var thankfulInput = document.getElementById("thankful-input");
 let min = 35;
 let max = 65;
@@ -25,7 +24,6 @@ let url = "https://api.mlab.com/api/1/databases/heroku_49mrv4g0/collections/leav
 //add event listener to addButton...if tree is displayed, hide it and show form. If not, add tree and leaves
 addButton.addEventListener('click', function (e) {
     if (tree.style.display == "none") {
-        // addLeaf(firstName.value, lastName.value, thankfulInput.value);
         addLeaf(firstName.value, thankfulInput.value);
         makeRequest();
         hideForm();
@@ -83,7 +81,6 @@ function showForm() {
     form.style.height = "50vh";
     firstName.style.display = "block";
     firstName.focus();
-    // lastName.style.display = "block";
     thankfulInput.style.display = "block";
     for (let i = 0; i < 2; i++) {
         document.getElementsByClassName("caption")[i].style.display = "block"
@@ -96,7 +93,6 @@ function showForm() {
 function hideForm() {
     form.style.height = "10vh";
     firstName.style.display = "none";
-    // lastName.style.display = "none";
     thankfulInput.style.display = "none";
     for (let i = 0; i < 2; i++) {
         document.getElementsByClassName("caption")[i].style.display = "none"
@@ -112,7 +108,6 @@ async function addLeaf(first, thanks) {
     let newLeaf = { "author": first, "content": thanks};
     let xLoc = (Math.floor(Math.random() * (max - min + 1)) + min);
     let yLoc = (Math.floor(Math.random() * (max - min - 10 + 1)) + min-10)
-    //, "month": date.getMonth(), "day": date.getDay(), "id": leafCount
     await fetch(url, {
         headers: {"Content-Type": "application/json; charset=utf-8"},
         method: 'POST',
