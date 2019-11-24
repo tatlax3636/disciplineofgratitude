@@ -55,8 +55,6 @@ function populateDropdown() {
 }
 
 function getSelectedLeaves(value) {
-    console.log("ran")
-    console.log(value)
     leavesDisplay.innerHTML = "";
     for (let i = 0; i < leaves.length; i++) {
         author = leaves[i].author;
@@ -78,7 +76,6 @@ function getLeaves() {
             for (let i = 0; i < response.length; i++) {
                 leaves.push(response[i])
             }
-            console.log(leaves);
             populateDropdown();
             getSelectedLeaves("all");
         } else {

@@ -143,7 +143,7 @@ function addLeaves() {
             newLeafImg.id = leaves[i]._id.$oid;
             newLeafImg.classList.add('leaf-selector')
             xloc = leaves[i].x_location;
-            yloc = leaves[i].y_location;
+            yloc = leaves[i].y_location + 4;
     
     
             document.getElementById('leaf-container').append(newLeafImg);
@@ -176,7 +176,6 @@ function showDetails(id) {
     addButton.style.display = "none";
 
     details.innerText = leaves[id].content + "\n" + "-" + leaves[id].author;
-    //signature.innerText = leaves[id].author;
     details.classList.add("details");
     details.addEventListener('click', function (e) {
         details.classList.remove("details");
