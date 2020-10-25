@@ -1,3 +1,21 @@
+const Config = require('../config')
+
+// DB variables
+const { Sequelize } = require('sequelize')
+
+const sequelize = new Sequelize(Config.DATABASE, {
+    host: Config.DB_HOST,
+    dialect: Config.DIALECT
+})
+
+console.log(Config)
+try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+
 //global variables
 var tree = document.getElementsByClassName('tree')[0]
 var leaves = []; //array to hold leaf objects for now until DB is created
