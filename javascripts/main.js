@@ -1,20 +1,3 @@
-const Config = require('../config')
-
-// DB variables
-const { Sequelize } = require('sequelize')
-
-const sequelize = new Sequelize(Config.DATABASE, {
-    host: Config.DB_HOST,
-    dialect: Config.DIALECT
-})
-
-console.log(Config)
-try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
 
 //global variables
 var tree = document.getElementsByClassName('tree')[0]
@@ -31,6 +14,7 @@ var leafImages = document.getElementsByClassName('leaf-selector')
 let dropdown = document.getElementsByTagName('select')[0]
 
 
+
 //form elements
 var form = document.getElementsByTagName('form')[0];
 var firstName = document.getElementById("first-name");
@@ -38,11 +22,15 @@ var thankfulInput = document.getElementById("thankful-input");
 let min = 35;
 let max = 65;
 let url = "https://api.mlab.com/api/1/databases/heroku_49mrv4g0/collections/leaves?apiKey=0qvWZe2FVufM8yIjnQa3_QGU9YdtysS1"
+let api_url = "http://localhost:3000"
+
+
 
 //add event listener to addButton...if tree is displayed, hide it and show form. If not, add tree and leaves
 addButton.addEventListener('click', function (e) {
     if (tree.style.display == "none") {
         addLeaf(firstName.value, thankfulInput.value);
+
         makeRequest();
         hideForm();
         tree.style.display = "block"
@@ -120,13 +108,26 @@ function hideForm() {
     }
 }
 
+async function addLeavesNew(){
+    await fetch(`${api_url}/leaves`, {
+        headers: {"Content-Type": "application/json; charset=utf-8"},
+        method: 'GET',
+    }).then(response => {
+        console.log('new get')
+        console.log(response)
+        return
+    }).catch(err => {
+        console.log(err)
+    })
+    return
+}
 
 async function addLeaf(first, thanks) {
     let date = new Date();
     let newLeaf = { "author": first, "content": thanks};
     let xLoc = (Math.floor(Math.random() * (max - min + 1)) + min);
     let yLoc = (Math.floor(Math.random() * (max - min - 10 + 1)) + min-10)
-    await fetch(url, {
+    await fetch(`${api_url}/leaves`, {
         headers: {"Content-Type": "application/json; charset=utf-8"},
         method: 'POST',
         body: JSON.stringify({
@@ -155,10 +156,11 @@ function styleLeafImg(newLeafImg, location) {
 }
 
 function addLeaves() {
+    addLeavesNew()
     for (let i = 0; i < leaves.length; i++) {
         if(leaves[i].author == dropdown.value || dropdown.value == "all" || firstTime == true){
             let newLeafImg = document.createElement('img');
-            newLeafImg.id = leaves[i]._id.$oid;
+            newLeafImg.id = leaves[i].id;
             newLeafImg.classList.add('leaf-selector')
             xloc = leaves[i].x_location;
             yloc = leaves[i].y_location + 4;
@@ -218,7 +220,8 @@ function makeRequest() {
 
     httpRequest.onreadystatechange = getLeaves;
     //httpRequest.onreadystatechange = addLeaves;
-    httpRequest.open('GET', url);
+    //httpRequest.open('GET', url);
+    httpRequest.open('GET', `${api_url}/leaves`);
     httpRequest.send();
 }
 
@@ -227,6 +230,7 @@ function getLeaves() {
         if (httpRequest.status === 200) {
             leaves = [];
             let response = JSON.parse(httpRequest.responseText)
+            console.log(response)
             for(let i=0; i<response.length; i++){
                 leaves.push(response[i])
             }

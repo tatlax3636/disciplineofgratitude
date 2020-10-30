@@ -1,7 +1,6 @@
 let config = {
-    DATABASE: 'leaves_db',
-    DB_HOST: 'localhost',
-    DIALECT: 'postgres'
+    api_ip: 'localhost',
+    api_port: 3000
 }
 
 module.exports = {
